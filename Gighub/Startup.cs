@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Gighub.Models.Entities;
+using FluentValidation.AspNetCore;
 
 namespace Gighub
 {
@@ -33,7 +34,12 @@ namespace Gighub
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddFluentValidation(cgf => cgf.RegisterValidatorsFromAssemblyContaining<Startup>());
+
+            #region Validators
+            //services.AddTransient<IValidator<GigFormViewModel>, GigFormViewModelValidator>();
+            #endregion
             services.AddRazorPages();
         }
 
