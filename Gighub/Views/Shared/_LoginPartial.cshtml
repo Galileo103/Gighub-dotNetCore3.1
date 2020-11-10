@@ -14,6 +14,8 @@
                     <a class="dropdown-item" href="#">Gigs I'm Going</a>
                     <a class="dropdown-item" href="#">Artists I'm Following</a>
                     <div class="dropdown-divider"></div>
+                    <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Manage your account</a>
+                    <div class="dropdown-divider"></div>
                     <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
                         <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
                     </form>
