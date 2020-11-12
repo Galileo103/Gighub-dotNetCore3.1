@@ -1,26 +1,77 @@
-﻿@{
+﻿@model IEnumerable<Gighub.Models.Entities.Gig>
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <ul class="gigs">
-    <li>
-        <div class="date">
-            <div class="month">
-                Nov
+    @foreach (var gig in Model)
+    {
+        <li>
+            <div class="date">
+                <div class="month">
+                    @gig.DateTime.ToString("MMM")
+                </div>
+                <div class="day">
+                    @gig.DateTime.ToString("d ")
+                </div>
             </div>
-            <div class="day">
-                20
-            </div>
-        </div>
 
-        <div class="details">
-            <span class="artist">Galal Shaban</span>
-            <span class="genre">Rock</span>
-        </div>
-    </li>
+            <div class="details">
+                <span class="artist">
+                    @gig.Artist.FirstName @gig.Artist.LastName
+                </span>
+                <span class="genre">
+                    @gig.Genre.Name
+                </span>
+                <button data-gig-id="@gig.Id" class="btn btn-light btn-sm pull-right js-toggle-attendance">Going?</button>
+            </div>
+        </li>
+    }
 </ul>
 
 @*<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>*@
+        <h1 class="display-4">Welcome</h1>
+        <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    </div>*@
+
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+
+            $(".js-toggle-attendance")
+                .click(function(e) {
+                    var button = $(e.target);
+                    $.ajax({
+                        url: "/api/attendances/",
+                        method: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify({ "gigId": parseInt(button.attr("data-gig-id")) }),
+                        dataType: "json"
+                        })
+                        .done(function() {
+                            button
+                                .removeClass("btn-light")
+                                .addClass("btn-danger")
+                                .text("Going");
+                        })
+                        .fail(function () {
+                            alert("failed!");
+                            alert("Something failed!");
+                        });
+                });
+
+            //$(".js-toggle-follow").click(function (e) {
+            //    var button = $(e.target);
+            //    $.post("/api/followings", { followeeId: button.attr("data-user-id") })
+            //        .done(function () {
+            //            button.text("Following");
+            //        })
+            //        .fail(function () {
+            //            alert("Something failed");
+            //        });
+            //});
+        });
+    </script>
+}
