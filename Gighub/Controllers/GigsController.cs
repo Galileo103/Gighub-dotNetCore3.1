@@ -8,6 +8,8 @@ using System.Collections.Generic;
 
 namespace Gighub.Controllers
 {
+    [Route("api/v{api-version:apiVersion}/[controller]")]
+    [ApiController]
     public class GigsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -17,6 +19,7 @@ namespace Gighub.Controllers
         }
 
         [Authorize]
+        [HttpGet]
         public IActionResult Create()
         {
             var viewModel = new GigFormViewModel

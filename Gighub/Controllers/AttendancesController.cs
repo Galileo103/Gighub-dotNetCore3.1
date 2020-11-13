@@ -17,7 +17,7 @@ namespace Gighub.Controllers
         public int GigId { get; set; }
     }
 
-    [Route("api/[controller]")]
+    [Route("api/v{api-version:apiVersion}/[controller]")]
     [ApiController]
     [Authorize]
     public class AttendancesController : ControllerBase
@@ -27,6 +27,12 @@ namespace Gighub.Controllers
         {
             _context = context;
         }
+
+        /// <summary>
+        /// summary about add Attend
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult Attend([FromBody] AttendanceDto dto)
         {
