@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Gighub.Controllers
 {
@@ -18,6 +19,18 @@ namespace Gighub.Controllers
         public GigsController(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        [Authorize]
+        public ActionResult Mine()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var gigs = _context.Gigs
+                .Where(g => g.ArtistId == userId && g.DateTime > DateTime.Now)
+                .Include(g => g.Genre)
+                .ToList();
+
+            return View(gigs);
         }
 
         [Authorize]
@@ -85,7 +98,7 @@ namespace Gighub.Controllers
             _context.Gigs.Add(gig);
             _context.SaveChanges();
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Mine", "Gigs");
         }
     }
 }
