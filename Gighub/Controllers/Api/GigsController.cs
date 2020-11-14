@@ -4,6 +4,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Gighub.Data;
+using Gighub.Models.Entities;
+using Gighub.Models.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -35,6 +37,28 @@ namespace Gighub.Controllers.Api
             }
 
             gig.IsCanceled = true;
+
+            var notification = new Notification
+            {
+                DateTime = DateTime.Now,
+                NotificationType = NotificationType.GigCanceled,
+                GigId = gig.Id
+            };
+
+            var attendess = _context.Attendances.Where(a => a.GigId == gig.Id)
+                .Select(a => a.Attendee)
+                .ToList();
+
+            foreach (var attendee in attendess)
+            {
+                var userNotification = new UserNotification
+                {
+                    User = attendee,
+                    Notification = notification
+                };
+
+                _context.UserNotifications.Add(userNotification);
+            }
 
             _context.SaveChanges();
 

@@ -17,6 +17,8 @@ namespace Gighub.Data
         public virtual DbSet<Genre> Genres { get; set; }
         public virtual DbSet<Attendance> Attendances { get; set; }
         public virtual DbSet<Following> Followings { get; set; }
+        public virtual DbSet<Notification> Notifications { get; set; }
+        public virtual DbSet<UserNotification> UserNotifications { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -26,7 +28,8 @@ namespace Gighub.Data
             modelBuilder.ApplyConfiguration(new GenreConfiguration());
             modelBuilder.ApplyConfiguration(new AttendanceConfiguration());
             modelBuilder.ApplyConfiguration(new FollowingConfiguration());
-
+            modelBuilder.ApplyConfiguration(new NotificationConfiguration());
+            modelBuilder.ApplyConfiguration(new UserNotificationConfiguration());
 
             base.OnModelCreating(modelBuilder);
             modelBuilder.LowerCaseTablesAndFields();
