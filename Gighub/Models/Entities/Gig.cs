@@ -5,6 +5,7 @@ namespace Gighub.Models.Entities
     public class Gig
     {
         public int Id { get; set; }
+        public bool IsCanceled { get; set; }
         public string ArtistId { get; set; }
         public virtual ApplicationUser Artist { get; set; }
         public DateTime DateTime { get; set; }

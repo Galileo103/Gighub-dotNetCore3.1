@@ -10,48 +10,48 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace Gighub.Controllers
+namespace Gighub.Controllers.Api
 {
-    public class FollowingDto
+    public class AttendanceDto
     {
-        public string FolloweeId { get; set; }
+        public int GigId { get; set; }
     }
 
     [Route("api/v{api-version:apiVersion}/[controller]")]
     [ApiController]
     [Authorize]
-    public class FollowingsController : ControllerBase
+    public class AttendancesController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        public FollowingsController(ApplicationDbContext context)
+        public AttendancesController(ApplicationDbContext context)
         {
             _context = context;
         }
 
         /// <summary>
-        /// summary about Follow
+        /// summary about add Attend
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Follow([FromBody] FollowingDto dto)
+        public IActionResult Attend([FromBody] AttendanceDto dto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var exists = _context.Followings.Any(a => a.FollowerId == userId && a.FolloweeId == dto.FolloweeId);
+            var exists = _context.Attendances.Any(a => a.AttendeeId == userId && a.GigId == dto.GigId);
 
             if (exists)
             {
-                return BadRequest("Following already exists.");
+                return BadRequest("The attendances already exists.");
             }
 
-            var following = new Following
+            var attendance = new Attendance
             {
-                FollowerId = userId,
-                FolloweeId = dto.FolloweeId
+                GigId = dto.GigId,
+                AttendeeId = userId
             };
 
-            _context.Followings.Add(following);
+            _context.Attendances.Add(attendance);
             _context.SaveChanges();
 
             return Ok(JsonConvert.SerializeObject(dto));

@@ -31,4 +31,8 @@
     <ProjectReference Include="..\Swagger.ApiVersioning\Swagger.ApiVersioning.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\lib\bootbox\" />
+  </ItemGroup>
+
 </Project>
