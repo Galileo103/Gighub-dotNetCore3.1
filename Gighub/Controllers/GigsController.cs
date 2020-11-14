@@ -66,9 +66,35 @@ namespace Gighub.Controllers
                     new Genre {Id = 2, Name = "Blues" },
                     new Genre {Id = 3, Name = "Rock" },
                     new Genre {Id = 4, Name = "Country" }
-                }
+                },
+                Heading = "Add a Gig"
             };
-            return View(viewModel);
+            return View("GigForm", viewModel);
+        }
+
+        [Authorize]
+        public IActionResult Edit(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var gig = _context.Gigs.Single(g => g.Id == id && g.ArtistId == userId);
+            var viewModel = new GigFormViewModel
+            {
+                Id = gig.Id,
+                Genres = new List<Genre>()
+                {
+                    new Genre { Id = 1, Name = "Jazz" },
+                    new Genre { Id = 2, Name = "Blues" },
+                    new Genre { Id = 3, Name = "Rock" },
+                    new Genre { Id = 4, Name = "Country" }
+                },
+                Date = gig.DateTime.ToString("d MMM yyyy"),
+                Time = gig.DateTime.ToString("HH:mm"),
+                Genre = gig.GenreId,
+                Venue = gig.Venue,
+                Heading = "Edit a Gig"
+            };
+
+            return View("GigForm", viewModel);
         }
 
         [Authorize]
@@ -85,14 +111,14 @@ namespace Gighub.Controllers
                     new Genre {Id = 3, Name = "Rock" },
                     new Genre {Id = 4, Name = "Country" }
                 };
-                return View("Create", viewModel);
+                return View("GigForm", viewModel);
             }
             var gig = new Gig
             {
                 ArtistId = User.FindFirstValue(ClaimTypes.NameIdentifier),
                 DateTime = viewModel.GetDateTime(),
                 GenreId = viewModel.Genre,
-                Venue = viewModel.Venue
+                Venue = viewModel.Venue,
             };
 
             _context.Gigs.Add(gig);
@@ -100,5 +126,37 @@ namespace Gighub.Controllers
 
             return RedirectToAction("Mine", "Gigs");
         }
+
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Update(GigFormViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                viewModel.Genres = new List<Genre>()
+                {
+                    new Genre {Id = 1, Name = "Jazz" },
+                    new Genre {Id = 2, Name = "Blues" },
+                    new Genre {Id = 3, Name = "Rock" },
+                    new Genre {Id = 4, Name = "Country" }
+                };
+                return View("GigForm", viewModel);
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var gig = _context.Gigs.Single(g => g.Id == viewModel.Id && g.ArtistId == userId);
+
+            gig.Venue = viewModel.Venue;
+            gig.DateTime = viewModel.GetDateTime();
+            gig.GenreId = viewModel.Genre;
+
+            _context.SaveChanges();
+
+            return RedirectToAction("Mine", "Gigs");
+        }
+
     }
 }
