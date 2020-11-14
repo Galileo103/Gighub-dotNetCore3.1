@@ -16,6 +16,7 @@ namespace Gighub.Data
         public virtual DbSet<Gig> Gigs { get; set; }
         public virtual DbSet<Genre> Genres { get; set; }
         public virtual DbSet<Attendance> Attendances { get; set; }
+        public virtual DbSet<Following> Followings { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -24,6 +25,7 @@ namespace Gighub.Data
             modelBuilder.ApplyConfiguration(new GigConfiguration());
             modelBuilder.ApplyConfiguration(new GenreConfiguration());
             modelBuilder.ApplyConfiguration(new AttendanceConfiguration());
+            modelBuilder.ApplyConfiguration(new FollowingConfiguration());
 
 
             base.OnModelCreating(modelBuilder);

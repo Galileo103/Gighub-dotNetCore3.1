@@ -5,17 +5,40 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Collections.Generic;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gighub.Controllers
 {
-    [Route("api/v{api-version:apiVersion}/[controller]")]
-    [ApiController]
+    //[Route("api/v{api-version:apiVersion}/[controller]")]
+    //[ApiController]
     public class GigsController : Controller
     {
         private readonly ApplicationDbContext _context;
         public GigsController(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        [Authorize]
+        public ActionResult Attending()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var gigs = _context.Attendances
+                .Where(a => a.AttendeeId == userId)
+                .Include(g => g.Gig.Artist)
+                .Include(g => g.Gig.Genre)
+                .Select(a => a.Gig)
+                .ToList();
+
+            var viewModel = new GigsViewModel()
+            {
+                UpcomingGigs = gigs,
+                ShowActions = User.Identity.IsAuthenticated,
+                Heading = "Gigs I'm Attending"
+            };
+
+            return View("Gigs", viewModel);
         }
 
         [Authorize]

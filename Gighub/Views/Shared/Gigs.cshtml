@@ -1,10 +1,11 @@
-﻿@model IEnumerable<Gighub.Models.Entities.Gig>
+﻿@model Gighub.Models.ViewModels.GigsViewModel
 @{
     ViewData["Title"] = "Home Page";
 }
 
-<ul class="gigs">
-    @foreach (var gig in Model)
+<h1>@Model.Heading</h1>
+<ul class="gigs mt-4">
+    @foreach (var gig in Model.UpcomingGigs)
     {
         <li>
             <div class="date">
@@ -19,11 +20,19 @@
             <div class="details">
                 <span class="artist">
                     @gig.Artist.FirstName @gig.Artist.LastName
+
+                    @if (Model.ShowActions)
+                    {
+                        <button data-user-id="@gig.ArtistId" class="btn btn-link btn-sm js-toggle-follow">Follow</button>
+                    }
                 </span>
                 <span class="genre">
                     @gig.Genre.Name
                 </span>
-                <button data-gig-id="@gig.Id" class="btn btn-light btn-sm pull-right js-toggle-attendance">Going?</button>
+                @if (Model.ShowActions)
+                {
+                    <button data-gig-id="@gig.Id" class="btn btn-light btn-sm float-right js-toggle-attendance">Going?</button>
+                }
             </div>
         </li>
     }
@@ -44,7 +53,7 @@
                 .click(function(e) {
                     var button = $(e.target);
                     $.ajax({
-                        url: "/api/attendances/",
+                        url: "/api/v1/attendances/",
                         method: "POST",
                         contentType: "application/json",
                         data: JSON.stringify({ "gigId": parseInt(button.attr("data-gig-id")) }),
@@ -57,7 +66,24 @@
                                 .text("Going");
                         })
                         .fail(function () {
-                            alert("failed!");
+                            alert("Something failed!");
+                        });
+                });
+
+            $(".js-toggle-follow")
+                .click(function(e) {
+                    var button = $(e.target);
+                    $.ajax({
+                        url: "/api/v1/followings",
+                        method: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify({ "followeeId": button.attr("data-user-id") }),
+                        dataType: "json"
+                        })
+                        .done(function() {
+                            button.text("Following");
+                        })
+                        .fail(function () {
                             alert("Something failed!");
                         });
                 });

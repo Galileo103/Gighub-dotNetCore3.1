@@ -1,9 +1,17 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Gighub.Models.Entities
 {
     public class ApplicationUser : IdentityUser
     {
+
+        public ApplicationUser()
+        {
+            Followers = new Collection<Following>();
+            Followees = new Collection<Following>();
+        }
         public Gig Gig { get; set; }
 
         public string FirstName { get; set; }
@@ -14,5 +22,8 @@ namespace Gighub.Models.Entities
         public string Website { get; set; }
         public bool IsActive { get; set; }
         public string PhotoUrl { get; set; }
+
+        public ICollection<Following> Followers { get; set; }
+        public ICollection<Following> Followees { get; set; }
     }
 }

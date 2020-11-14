@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Gighub.Models;
 using Gighub.Data;
 using Microsoft.EntityFrameworkCore;
+using Gighub.Models.ViewModels;
 
 namespace Gighub.Controllers
 {
@@ -30,7 +30,14 @@ namespace Gighub.Controllers
                 .Include(g => g.Genre)
                 .Where(g => g.DateTime > DateTime.Now);
 
-            return View(upcomingGigs);
+            var viewModel = new GigsViewModel
+            {
+                UpcomingGigs = upcomingGigs,
+                ShowActions = User.Identity.IsAuthenticated,
+                Heading = "Upcoming Gigs"
+            };
+
+            return View("Gigs", viewModel);
         }
 
         public IActionResult Privacy()
