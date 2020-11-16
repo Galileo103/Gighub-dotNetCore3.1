@@ -100,6 +100,9 @@ namespace Gighub
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            // Enable Authorized middleware to open Swagger.
+            app.UseSwaggerAuthorized();
+
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
 
