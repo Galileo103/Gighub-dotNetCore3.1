@@ -9,6 +9,7 @@ using Gighub.Models.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gighub.Controllers.Api
 {
@@ -29,36 +30,18 @@ namespace Gighub.Controllers.Api
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var gig = _context.Gigs.Single(g => g.Id == id && g.ArtistId == userId);
+            var gig = _context.Gigs
+                .Include(g => g.Attendances)
+                .ThenInclude(x => x.Attendee)
+                //.Include("Attendances.Attendee")
+                .Single(g => g.Id == id && g.ArtistId == userId);
 
             if (gig.IsCanceled)
             {
                 return NotFound();
             }
 
-            gig.IsCanceled = true;
-
-            var notification = new Notification
-            {
-                DateTime = DateTime.Now,
-                NotificationType = NotificationType.GigCanceled,
-                GigId = gig.Id
-            };
-
-            var attendess = _context.Attendances.Where(a => a.GigId == gig.Id)
-                .Select(a => a.Attendee)
-                .ToList();
-
-            foreach (var attendee in attendess)
-            {
-                var userNotification = new UserNotification
-                {
-                    User = attendee,
-                    Notification = notification
-                };
-
-                _context.UserNotifications.Add(userNotification);
-            }
+            gig.Cancel();
 
             _context.SaveChanges();
 

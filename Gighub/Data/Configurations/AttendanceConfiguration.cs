@@ -12,7 +12,7 @@ namespace Gighub.Data.Configurations
 
 
                 builder.HasOne<Gig>(g => g.Gig)
-                .WithMany()
+                .WithMany(a => a.Attendances)
                 .HasForeignKey(g => g.GigId)
                 .OnDelete(DeleteBehavior.NoAction);
         }

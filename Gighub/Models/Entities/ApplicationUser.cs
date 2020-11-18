@@ -11,8 +11,9 @@ namespace Gighub.Models.Entities
         {
             Followers = new Collection<Following>();
             Followees = new Collection<Following>();
+            UserNotifications = new Collection<UserNotification>();
+            Gigs = new Collection<Gig>();
         }
-        public Gig Gig { get; set; }
 
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -25,5 +26,12 @@ namespace Gighub.Models.Entities
 
         public ICollection<Following> Followers { get; set; }
         public ICollection<Following> Followees { get; set; }
+        public ICollection<UserNotification> UserNotifications { get; set; }
+        public ICollection<Gig> Gigs { get; set; }
+
+        public void Notify(Notification notification)
+        {
+            UserNotifications.Add(new UserNotification(this, notification));
+        }
     }
 }

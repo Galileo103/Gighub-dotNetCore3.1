@@ -21,8 +21,8 @@ namespace Gighub.Data.Configurations
 
 
             builder.HasOne(a => a.Artist)
-                .WithOne(g => g.Gig)
-                .HasForeignKey<Gig>(f => f.ArtistId);
+                .WithMany(a => a.Gigs)
+                .HasForeignKey(f => f.ArtistId);
 
             builder.HasOne(m => m.Genre)
                 .WithMany(m => m.Gigs)

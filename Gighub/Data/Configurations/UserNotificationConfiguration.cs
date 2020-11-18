@@ -10,9 +10,9 @@ namespace Gighub.Data.Configurations
         {
             builder.HasKey(i => new { i.UserId, i.NotificationId });
 
-            builder.HasOne<ApplicationUser>(g => g.User)
-                .WithMany()
-                .HasForeignKey(g => g.UserId)
+            builder.HasOne<ApplicationUser>(n => n.User)
+                .WithMany(u => u.UserNotifications)
+                .HasForeignKey(n => n.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }
