@@ -121,6 +121,14 @@ namespace Gighub.Controllers
                 Venue = viewModel.Venue,
             };
 
+            var followers = _context.ApplicationUsers
+                .Include(f => f.Followers)
+                .ThenInclude(f => f.Followee)
+                .FirstOrDefault(i => i.Id == gig.ArtistId)?.Followers.ToList();
+
+
+            gig.Create(followers);
+
             _context.Gigs.Add(gig);
             _context.SaveChanges();
 

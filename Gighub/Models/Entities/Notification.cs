@@ -21,30 +21,30 @@ namespace Gighub.Models.Entities
         {
         }
 
-        private Notification(NotificationType type, int gigId)
+        private Notification(NotificationType type, Gig gig)
         {
             NotificationType = type;
-            GigId = gigId;
+            Gig = gig;
             DateTime = DateTime.Now;
         }
 
-        public static Notification GigCreated(int gigId)
+        public static Notification GigCreated(Gig gig)
         {
-            return new Notification(NotificationType.GigCreated, gigId);
+            return new Notification(NotificationType.GigCreated, gig);
         }
 
-        public static Notification GigUpdated(int gigId, DateTime originalDateTime, string originalVenue)
+        public static Notification GigUpdated(Gig newGig, DateTime originalDateTime, string originalVenue)
         {
-            var notification = new Notification(NotificationType.GigUpdated, gigId);
+            var notification = new Notification(NotificationType.GigUpdated, newGig);
             notification.OriginalDateTime = originalDateTime;
             notification.OriginalVenue = originalVenue;
 
             return notification;
         }
 
-        public static Notification GigCanceled(int gigId)
+        public static Notification GigCanceled(Gig gig)
         {
-            return new Notification(NotificationType.GigCanceled, gigId);
+            return new Notification(NotificationType.GigCanceled, gig);
         }
     }
 }

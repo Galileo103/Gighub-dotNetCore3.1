@@ -28,7 +28,7 @@ namespace Gighub.Models.Entities
         {
             IsCanceled = true;
 
-            var notification = Notification.GigCanceled(Id);
+            var notification = Notification.GigCanceled(this);
 
             foreach (var attendee in Attendances.Select(a => a.Attendee))
             {
@@ -38,7 +38,7 @@ namespace Gighub.Models.Entities
 
         public void Update(GigFormViewModel viewModel)
         {
-            var notification = Notification.GigUpdated(Id, DateTime, Venue);
+            var notification = Notification.GigUpdated(this, DateTime, Venue);
 
             Venue = viewModel.Venue;
             DateTime = viewModel.GetDateTime();
@@ -51,13 +51,13 @@ namespace Gighub.Models.Entities
         }
 
         // TODO:: Implament Create Gig Notification
-        public void Create()
+        public void Create(List<Following> followings)
         {
-            var notification = Notification.GigCreated(Id);
+            var notification = Notification.GigCreated(this);
 
-            foreach (var attendee in Attendances.Select(a => a.Attendee))
+            foreach (var followee in followings.Select(a => a.Followee))
             {
-                attendee.Notify(notification);
+                followee.Notify(notification);
             }
         }
     }
