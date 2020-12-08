@@ -20,6 +20,10 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Swagger.ApiVersioning;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using AutoMapper;
+using Gighub.Configurations;
 
 namespace Gighub
 {
@@ -49,13 +53,22 @@ namespace Gighub
 
             services.AddRazorPages();
 
-            services.AddMvc();
+            services.AddMvc()
+            .AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
+
+            services.AddAutoMapper(typeof(Startup));
+            //services.AddAutoMapper(mp => mp.AddProfile<MappingProfile>(), typeof(Startup));
+
+
             services.AddApiVersioning(
-                            options =>
-                            {
-                                // reporting api versions will return the headers "api-supported-versions" and "api-deprecated-versions"
-                                options.ReportApiVersions = true;
-                            });
+                options =>
+                {
+                    // reporting api versions will return the headers "api-supported-versions" and "api-deprecated-versions"
+                    options.ReportApiVersions = true;
+                });
             services.AddVersionedApiExplorer(
                 options =>
                 {
